@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <title>Typehead Test</title>
+        <!-- CSS Style -->
+        <link rel="stylesheet" type="text/css" href="style/style.css" media="all">
+    </head>
+    <body>
+
+        <div id="searchTxt">
+            <input class="typeahead" type="text" placeholder="Search things...">
+        </div>
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="js/typehead.min.js"></script>
+        <script>
+            var substringMatcher = function(strs) {
+                return function findMatches(q, cb) {
+                    var matches, substringRegex;
+
+                    // an array that will be populated with substring matches
+                    matches = [];
+
+                    // regex used to determine if a string contains the substring `q`
+                    substrRegex = new RegExp(q, 'i');
+
+                    // iterate through the pool of strings and for any string that
+                    // contains the substring `q`, add it to the `matches` array
+                    $.each(strs, function(i, str) {
+                        if (substrRegex.test(str.name)) {
+                            matches.push(str);
+                        }
+                    });
+
+                    cb(matches);
+                };
+            };
+
+            var items = [
+                {name: "Guaratã Alencar Ferreira de Lima Junior", category: 'Names'},
+                {name: "John Hust", category: 'Names'},
+                {name: "FrontEnd Developer", category: 'Occupations'},
+                {name: "Apple", category: 'Fruits'},
+                {name: "Rice", category: 'Foods'},
+                {name: "Ford", category: 'Cars'},
+                {name: "Bike", category: 'Bikes'},
+                {name: "Guitar", category: 'Music'},
+                {name: "Capuccino", category: 'Coffee'},
+                {name: "Ball", category: 'Toys'},
+            ];
+
+            $('#searchTxt .typeahead').typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 1
+            },
+            {
+                name: 'items',
+                displayKey: 'name',
+                source: substringMatcher(items),
+                templates: {
+                    empty: [
+                    '<div class="empty-message">',
+                        '<center>Item not found<p></p></center>',
+                    '</div>'
+                    ].join('\n'),
+                    suggestion: function(e) { return ('<div><strong>' + e.name + ' | </strong> ' + e.category + '</div>'); }
+                }
+            });
+        </script>
+    </body>
+</html>
